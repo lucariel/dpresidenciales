@@ -1,0 +1,23 @@
+42 Castillo: saque la lectura del vicepresidente
+41 Ortiz: saqué la lectura del vicepresidente
+40 Ortiz: Saqué solo la introducción (lo termina el pdte)
+39 Ortiz: Sin cambios (leyo todo el secretario por temas de salud)
+37 Justo: Sin cambios, hay una parte que vuelve a nombrar a sen y dip pero no le pasa la palabra a nadie
+36 Justo: Sin cambios, hay una parte que vuelve a nombrar a sen y dip pero no le pasa la palabra a nadie
+34 Justo: No está
+35 Justo: Sin cambios, hay una parte que vuelve a nombrar a sen y dip pero no le pasa la palabra a nadie
+33 Justo: Sin cambios, hay una parte que vuelve a nombrar a sen y dip pero no le pasa la palabra a nadie
+32 Justo: Sin cambios, hay una parte que vuelve a nombrar a sen y dip pero no le pasa la palabra a nadie
+26 Alvear: Sin cambios - no se de donde sale
+20 Yrigoyen: Sin cambios - es todo de el
+18 Yrigoyen: Lo leyó todo el vcepresidente Luna
+17 Yrigoyen: Lo dice todo el pdte es corto. 
+16 Victorino de la Plaza: Si bien al final repite sen y dip, lo lee todo el pdte.
+15 Roque S Peña: No lo da el, creo que lo da el vcepresidente y es el del 14 (cambio el nombre del archivo)
+13 Roque S Peña: Es todo de el
+06 Figueroa Alcorta: Sin Cambios
+04 Roca: Sin Cambios
+01 Roca: Sin Cambios
+
+
+

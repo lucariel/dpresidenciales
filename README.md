@@ -8,4 +8,14 @@ Fuente de los PDF: https://www.hcdn.gob.ar/secparl/dgral_info_parlamentaria/dip/
 
 + Los años 66-67-68 Bartolomé Mitre no se encuentra presente por la guerra de la triple alianza contra Paraguay. Deja un mensaje escrito y lo lee su scretario.
 
++ Castillo: saque la lectura del vicepresidente
+
++ Ortiz: saqué la lectura del vicepresidente
+
++ Yrigoyen: Leído por vicepresidente
+
++ Roque S Peña: No lo da el, creo que lo da el vcepresidente y es el del 14 (cambio el nombre del archivo)
+
+
+
 
