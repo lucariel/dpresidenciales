@@ -1,0 +1,11 @@
+---
+author: polAr
+date: '`r format(Sys.Date())`'
+title: Índice de Elecciones Disponibles
+subtitle: polAr - Política Argentina Usando R
+output: html_document
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```

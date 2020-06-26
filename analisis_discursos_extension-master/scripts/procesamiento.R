@@ -20,8 +20,14 @@ all_txts <- list.files(pattern = ".txt$", path = "discursos/")
 setwd("discursos/")   #### CREO CORPUS CON PALABRAS DE DISCURSOS
 
 discursos <- map_df(all_txts, ~ data_frame(txt = read_file(.x)) %>%
-         mutate(filename = basename(.x)) %>%
-         unnest_tokens(word, txt))
+         mutate(filename = basename(.x)))
+discursos['anio']=substr(discursos$filename, 1,4)
+discursos['presidente']=gsub(".txt","",substr(discursos$filename, 6,50))
+
+
+discursos<-discursos %>% select(-filename)
+colnames(discursos)[1]="discurso"
+discursos %>% write_csv('discursos.csv')
 
 setwd("../")
 

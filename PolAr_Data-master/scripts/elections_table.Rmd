@@ -1,0 +1,50 @@
+---
+title: "Índice de Elecciones Disponibles"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+<img src="https://github.com/electorArg/polAr/blob/master/hex/hex-polAr.png?raw=true" width="100">   <img src="https://github.com/electorArg/polAr/blob/master/hex/hex-data.png?raw=true" width="100">
+
+`{polAr}` brinda herramientas que facilitan el flujo de trabajo para el análisis político - electoral y el acceso a datos de Argentina. Las mismas pueden ser requeridas al robot electoral en _Twitter_ [`pol_Ar_bot`](https://twitter.com/pol_Ar_bot). Más información en el [sitio web](https://electorarg.github.io/polAr/).
+
+---
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+library(polAr)
+library(tidyverse)
+
+data <- show_available_elections(viewer = F) %>% 
+  mutate(category = case_when(
+          category == "presi" ~ "Presidente", 
+          category == "dip" ~ "Diputades", 
+          category == "sen" ~ "Senadores"),
+         round = case_when(
+          round == "gral" ~ "GENERAL", 
+          round == "paso" ~ "PASO",
+          round == "balota" ~ "BALOTAJE")) %>% 
+  select(Distrito = NOMBRE,
+         Año = year, 
+         Turno = round, 
+         Categoría = category) 
+  
+DT::datatable(data, rownames = F, 
+              options = list(
+  language = list(url = '//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json'))) %>% 
+  DT::formatStyle(
+    'Categoría',
+    target = 'cell',
+    backgroundColor = DT::styleEqual(c("Senadores","Presidente", "Diputades"), 
+                                     c("#91bfdb","#ffffbf","#fc8d59"))) %>% 
+  DT::formatStyle(
+    'Turno',
+    target = 'cell',
+    backgroundColor = DT::styleEqual(c("PASO","GENERAL", "BALOTAJE"), 
+                                     c("#f1a340","#998ec3", "#22ab70")))
+```

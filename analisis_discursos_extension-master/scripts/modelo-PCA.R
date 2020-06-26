@@ -53,7 +53,7 @@ pca_rep <- data_frame(txt = discursos_texto$txt,
 library(ggrepel)
 
 ggplot(data = pca_rep, mapping = aes(x = pc1, y = pc2, color = clust_id)) +
-  scale_color_manual(values = menta) +
+  #scale_color_manual(values = menta) +
   geom_text_repel(mapping = aes(label = discurso), size = 2, fontface = 'bold') +
   labs(title = 'K-Means Cluster: 5 clusters on PCA Features',
        x = '',
@@ -118,11 +118,20 @@ names <- a %>%
 
 df <- bind_cols(names,x,y)
 
+df1<-df %>% group_by(presidente) %>% summarise(
+  xvar = median(xvar),
+  yvar = median(yvar)
+) %>% ungroup()
+
+df1 %>% ggplot(aes(x = xvar, y = yvar,  color = presidente))+geom_point()+
+  geom_text_repel(mapping = aes(label = presidente, family = "AvenirNext LT Pro Bold"), size = 3)
+  
+
 df %>%
   ggplot(aes(x = xvar, y = yvar,  color = presidente)) +
   geom_text_repel(mapping = aes(label = discurso, family = "AvenirNext LT Pro Bold"), size = 3) +
   coord_fixed() +
-  scale_color_manual(values = menta) +
+  #scale_color_manual(values = menta) +
   labs(subtitle = "PCA - Apertura de Sesiones", x = "",y = "") +
   #  guides(colour=guide_legend(title="Espacio"), size = F) +
   theme(plot.subtitle = element_text(size=12),
@@ -134,6 +143,40 @@ df %>%
         panel.background = element_rect(fill = 'black')) 
 dev.off()
 
-ggsave(last_plot(), filename = "pca_v2.png",
+ggsave(last_plot(), filename = "pca_v3.png",
        device = "png", 
        path = "plots/")
+
+
+
+
+
+
+
+
+
+
+
+ggsave("menem_v1.jpg",menemv1 )
+?ggsave
+
+
+menemv1<-df1[df1$yvar>0,][df1$presidente!='carlos_menem',]%>%
+  ggplot(aes(x = xvar, y = yvar,  color = presidente)) +
+  geom_text_repel(mapping = aes(label = presidente, family = "AvenirNext LT Pro Bold"), size = 3) +
+  coord_fixed() +
+  #scale_color_manual(values = menta) +
+  labs(subtitle = "PCA - Apertura de Sesiones", x = "",y = "") +
+  #  guides(colour=guide_legend(title="Espacio"), size = F) +
+  theme(plot.subtitle = element_text(size=12),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = 'none',
+        axis.text = element_blank(),
+        plot.background = element_rect(fill="black"),
+        panel.background = element_rect(fill = 'black')) + geom_point(data=df[df$presidente=='carlos_menem',], aes(xvar,yvar))+  geom_text_repel(data=df[df$presidente=='carlos_menem',] ,mapping = aes(label = discurso, family = "AvenirNext LT Pro Bold"), size = 3) 
+
+
+df$discurso
+
+dev.off()
