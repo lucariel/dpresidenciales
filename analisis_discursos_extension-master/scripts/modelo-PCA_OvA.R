@@ -14,10 +14,9 @@ menta <- c("#179E8D","#CAFFFF","#A8FF00","#FFFD38",
 #OPCION 1 ####
 # WORD FREQUENCY
 
-discursos_texto <- read_csv("data/discursos_texto.csv") %>% 
+discursos_texto <- read_csv("../data/discursos_texto.csv") %>% 
   filter(!str_detect(discursos,"ASU")) %>%
-  mutate(discursos = str_sub(discursos,end =-9),
-         presidente = str_sub(discursos, start =6)) %>% 
+  mutate(discursos = str_sub(discursos,end =-5)) %>% 
   print()
 
 discursos_corpus <- Corpus(VectorSource(discursos_texto$txt)) %>% #limpio la data con la librería tm
@@ -41,15 +40,22 @@ tf_idf_mat <- as.matrix(tf_idf)
 tf_idf_norm <- tf_idf_mat / apply(tf_idf_mat, MARGIN = 1, FUN = function(x) sum(x^2)^0.5)
 km_clust <- kmeans(x = tf_idf_norm, centers = 5, iter.max = 25)
 
+tweet_token<-discursos_texto%>%
+  unnest_tokens(word, txt)
+tweet_token %>% group_by(presidente,clust_id,word) %>% summarise(
+  presidente = mode(presidente),
+  presidente = mode(clust_id),
+  freq = n()
+)
+
 #PCA ANALISIS
 pca_comp <- prcomp(tf_idf_norm)
 pca_rep <- data_frame(txt = discursos_texto$txt,
                       discurso = discursos_texto$discursos,
-                      presidente = discursos_texto$presidente,
                       pc1 = pca_comp$x[,1],
                       pc2 = pca_comp$x[,2],
                       clust_id = as.factor(km_clust$cluster))
-
+list.files('./data/')
 library(ggrepel)
 
 ggplot(data = pca_rep, mapping = aes(x = pc1, y = pc2, color = clust_id)) +
@@ -74,7 +80,7 @@ ggsave(last_plot(), filename = "pca.png",
 
 ###### OPCION 2 ####
 
-a <- read_csv("data/corpus_discursos_limpio.csv") %>% 
+a <- read_csv("../data/corpus_discursos_limpio.csv") %>% 
   group_by(discurso,word) %>% 
   mutate(n=n()) %>% 
   ungroup() %>% 
@@ -117,7 +123,7 @@ names <- a %>%
   print()
 
 df <- bind_cols(names,x,y)
-
+df1<-df
 
 df1 %>% ggplot(aes(x = xvar, y = yvar,  color = presidente))+geom_point()+
   geom_text_repel(mapping = aes(label = presidente, family = "AvenirNext LT Pro Bold"), size = 3)
@@ -137,7 +143,6 @@ df %>%
         axis.text = element_blank(),
         plot.background = element_rect(fill="black"),
         panel.background = element_rect(fill = 'black')) 
-dev.off()
 
 ggsave(last_plot(), filename = "pca_v3.png",
        device = "png", 
@@ -146,15 +151,20 @@ ggsave(last_plot(), filename = "pca_v3.png",
 
 
 
+df1=pca_rep %>% mutate(
+  anio = substr(discurso,1,4),
+  presidente = substr(discurso,6,nchar(discurso))
+)
+colnames(df1)[colnames(df1)=='pc1']='xvar'
+colnames(df1)[colnames(df1)=='pc2']='yvar'
+df2=df1 %>% group_by(presidente) %>% summarise(
+  xvarianza = sd(xvar,na.rm = T),
+  yvarianza = sd(yvar,na.rm = T),
+  varianza = xvarianza*10*yvarianza*10
+) %>% filter(!is.na(varianza))
+df3<-rbind(df2 %>% arrange(-varianza) %>% head(3) %>% mutate(cl='mayor_varianza'),df2 %>% arrange(-varianza) %>% tail(3) %>% mutate(cl='menor_varianza'))
+df1<-df1 %>% filter(presidente%in%df3$presidente)
 
-
-
-
-
-
-
-
-pres_a_plot=df1$presidente[5]
 
 plot_presidente_one_vs_all<-function(pres_a_plot,df){
   df1<-df %>% group_by(presidente) %>% summarise(
@@ -170,7 +180,7 @@ plot_presidente_one_vs_all<-function(pres_a_plot,df){
   df['anio']=substr(df$discurso,1,4)
   
   
-  df1[df1$xvar>limx2 & df1$xvar<limx1 & df1$yvar>limy2 & df1$yvar<limy1,][df1$presidente!=pres_a_plot,]%>%
+  df1[df1$xvar>limx2 & df1$xvar<limx1 & df1$yvar>limy2 & df1$yvar<limy1,] %>% dplyr::filter(presidente!=pres_a_plot)%>%
     ggplot(aes(x = xvar, y = yvar,  color = presidente))+
     ggtitle(paste("Discursos de \n",pres_a_plot)) +
     geom_text_repel(mapping = aes(label = presidente, family = "AvenirNext LT Pro Bold"), size = 3) +
@@ -190,11 +200,11 @@ plot_presidente_one_vs_all<-function(pres_a_plot,df){
 list_plot_presidente_OvA<-list()
 
 ## Opcion 1, para tods los discursos
-for(i in 1:length(df1$presidente)){
-  plot_presidente_OvA<-plot_presidente_one_vs_all(df1$presidente[i],df)
+for(i in 1:length(df3$presidente)){
+  plot_presidente_OvA<-plot_presidente_one_vs_all(df3$presidente[i],df)
   list_plot_presidente_OvA[[i]]<-plot_presidente_OvA
 }
-
+list_plot_presidente_OvA[[6]]
 
 ## Opcion 2, para tods con más de N discursos, N=2,en este caso
 
